@@ -62,10 +62,11 @@ L'application suppose une API REST disponible en local à l'adresse :
 
 > 📌 Assure-toi que l’API est lancée avant d'utiliser l'interface.
 
-### 📋 Cloner l'API (Facultatif)
+### 📋 Cloner l'API (Si besoin)
 ```bash
 git clone https://github.com/hellodamien/hacktrack-api
 ```
+> 🚨 Ajoute bien -> ("type": "module") dans le package.json de l'API
 
 ---
 
