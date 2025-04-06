@@ -1,4 +1,4 @@
-/*export function getDurations(startDate, endDate){
+/*export function getDurations(startDate, endDate){ //Function to get the duration with each dimensions (Hours, Minutes, Seconds ...)
     const diffTime = new Date(endDate) - new Date(startDate);
     
     let seconds = diffTime / 1000;
@@ -29,6 +29,7 @@
     };
 }*/
 
+//Function to format a date
 export function getFormattedDate(currentDate){
 
     const date = new Date(currentDate);

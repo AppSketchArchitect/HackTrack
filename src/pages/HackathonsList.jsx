@@ -17,7 +17,7 @@ export default function HackathonsList() {
 
     let response;
 
-    const onPageDecrement = (e) => {
+    const onPageDecrement = (e) => { //Show the previous page
         e.preventDefault();
         if (pageNumber > 1) {
             setPageNumber(pageNumber - 1);
@@ -26,69 +26,68 @@ export default function HackathonsList() {
         }
     }
 
-    const onPageIncrement = (e) => {
+    const onPageIncrement = (e) => { //Show the next page
         e.preventDefault();
 
-        fetch(`http://localhost:3002/hackathons?page=${pageNumber + 1}&limit=3`, { /* Envoie une requête à l'api pour récupérer les données par rapport au token */
+        fetch(`http://localhost:3002/hackathons?page=${pageNumber + 1}&limit=3`, { //Verify that the next page is not empty
             headers: {
                 "Content-Type": "application/json"
             }
         })
-            .then(res => {
-                response = res;
-                return res.json();
-            })
-            .then(data => {
-                if (response.status === 200) {
-                    console.log(data);
-                    if (data.length > 0) {
-                        setPageNumber(pageNumber + 1);
-                        setData(null);
-                        setError("");
-                    }
-                } else {
-                    console.log("Une erreur est survenue avec l'API.");
-                    setError("Une erreur est survenue avec l'API.");
+        .then(res => {
+            response = res;
+            return res.json();
+        })
+        .then(data => {
+            if (response.status === 200) {
+                console.log(data);
+                if (data.length > 0) { //If data is not null show the next page else do nothing
+                    setPageNumber(pageNumber + 1);
+                    setData(null);
+                    setError("");
                 }
-            })
-            .catch((e) => {
-                console.log(e); //Si erreur l'afficher dans la console
+            } else {
+                console.log("Une erreur est survenue avec l'API.");
                 setError("Une erreur est survenue avec l'API.");
-            });
+            }
+        })
+        .catch((e) => {
+            console.log(e);
+            setError("Une erreur est survenue avec l'API.");
+        });
 
     }
 
-    if (data == null && error == "") {
+    if (data == null && error == "") { //Get the data at the start or if needed
         loadingContext.setIsLoading(true);
-        setTimeout(async () => { //Simule un délai de la réponse de 3s
-            fetch(`http://localhost:3002/hackathons?page=${pageNumber}&limit=3`, { /* Envoie une requête à l'api pour récupérer les données par rapport au token */
+        setTimeout(async () => { //To show the spinner
+            fetch(`http://localhost:3002/hackathons?page=${pageNumber}&limit=3`, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
-                .then(async res => {
-                    response = res;
-                    return await res.json();
-                })
-                .then(data => {
-                    if (response.status === 200) {
-                        setData(data);
-                        setError("");
-                        loadingContext.setIsLoading(false);
-                    } else {
-                        console.log("Une erreur est survenue avec l'API.");
-                        setData(null);
-                        setError("Une erreur est survenue avec l'API.");
-                        loadingContext.setIsLoading(false);
-                    }
-                })
-                .catch((e) => {
-                    console.log(e); //Si erreur l'afficher dans la console
+            .then(async res => {
+                response = res;
+                return await res.json();
+            })
+            .then(data => {
+                if (response.status === 200) {
+                    setData(data);
+                    setError("");
+                    loadingContext.setIsLoading(false);
+                } else {
+                    console.log("Une erreur est survenue avec l'API.");
                     setData(null);
                     setError("Une erreur est survenue avec l'API.");
                     loadingContext.setIsLoading(false);
-                });
-            //Désactivation du spinner à la fin
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+                setData(null);
+                setError("Une erreur est survenue avec l'API.");
+                loadingContext.setIsLoading(false);
+            });
         }, 500);
     }
 

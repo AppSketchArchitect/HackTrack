@@ -1,25 +1,25 @@
 import { createContext, useContext, useState } from 'react';
 
-const UserContext = createContext(null); //Contexte de base égal à null (Privé)
+const UserContext = createContext(null); //Context of the user to null at default
 
-export const UserProvider = ({ children }) => { //Fournisseur du contexte à l'ensemble des enfants (Composants)
+export const UserProvider = ({ children }) => { //Provider of the user context
     const [user, setUser] = useState({
         email: '',
         name: '',
         isAuthentified: false
-    }); //Défini un état de base du contexte (Autre que null pour les enfants)
+    }); //Set a default state to the context
 
     return (
-        <UserContext.Provider value={{ user, setUser }}> {/* Fourni user et setUser aux enfants dans le contexte */}
+        <UserContext.Provider value={{ user, setUser }}> {/* Provide to chidren the capability to set or get the user at any time */}
             {children}
         </UserContext.Provider>
     );
 };
 
-export function useUserContext(){ //Fonction pour obtenir le contexte de façon sécurisée
+export function useUserContext(){ //Function to make secure the provider of the context
     const userContext = useContext(UserContext);
 
-    if(userContext == null){ //Si aucun UserProvider n'est défini dans la hiérarchie alors UserContext = null
+    if(userContext == null){ //If any Provider is define for the chidren, the loading context going to be null
         throw new Error('useUserContext must be used with a UserProvider');
     }
     return userContext;

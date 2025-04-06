@@ -12,9 +12,9 @@ import LoginValidator from "./components/LoginValidator.jsx";
 export default function App() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white font-sans pb-12">
-      <LoadingProvider>
+      <LoadingProvider> {/* Loading provider to show the spinner */}
         <UserProvider>
-          <LoginValidator/>
+          <LoginValidator/> {/* Allow to connect if the token in the localStorage is valid on initialization */}
           <BrowserRouter>
             <Routes>
               <Route index path="/" element={<Home />} />
@@ -24,7 +24,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
             </Routes>
           </BrowserRouter>
-          <Spinner />
+          <Spinner /> {/* Spinner to be showed if needed */}
         </UserProvider>
       </LoadingProvider>
     </div>

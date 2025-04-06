@@ -9,7 +9,7 @@ import PageTitle from '../components/PageTitle';
 import Error from '../components/Error';
 import Success from '../components/Success';
 
-const registerSchema = z.object({ //Schéma d'enregistrement
+const registerSchema = z.object({ //Register Model
     email: z.string().email(),
     password: z.string().min(8),
     name: z.string().min(3)
@@ -23,23 +23,23 @@ export default function Register(){
 
     const { register, handleSubmit } = useForm();
     
-    const [errorMessage, setErrorMessage] = useState(""); //Permet d'afficher un message d'erreur
-    const [successMessage, setSuccessMessage] = useState(""); //Permet d'afficher le message de succès
+    const [errorMessage, setErrorMessage] = useState(""); //Allow to show errors
+    const [successMessage, setSuccessMessage] = useState(""); //Allow to show success
 
-    useEffect(() => {
+    useEffect(() => { //If the user is authentified redirect to home
         if(userContext.user.isAuthentified){
             navigate("/");
         }
     }, []);
 
     const onRegister = (data) => {
-        loadingContext.setIsLoading(true); //Active le spinner
+        loadingContext.setIsLoading(true); //Show the spinner
 
-        //Reset les messages
+        //Reset messages
         setErrorMessage("");
         setSuccessMessage("");
 
-        //Vérifie que les mots de passe ne soit pas différents
+        //Verify that the passwords are the same
         if(data.password != data.confirmedPassword){
             setErrorMessage("Les mots de passe doivent être identiques.");
             loadingContext.setIsLoading(false);
@@ -52,11 +52,11 @@ export default function Register(){
             name: data.name
         }
 
-        //Vérifie si les données sont valide à l'enregistrement
+        //Verify that the form data are correct
         const registerParsed = registerSchema.safeParse(fetchData);
 
-        if(registerParsed.success == true){
-            fetch("http://localhost:3002/auth/register",{ //Requête à l'api avec les données
+        if(registerParsed.success == true){ //If correct request
+            fetch("http://localhost:3002/auth/register",{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -64,11 +64,11 @@ export default function Register(){
                 body: JSON.stringify(fetchData)
             })
             .then(async res => {
-                setTimeout(async () => { //Simule un délai de la réponse de 3s
-                    switch(res.status){ //Affichage d'un message en fonction de la réussite
+                setTimeout(async () => {
+                    switch(res.status){
                         case 201:
                             setSuccessMessage("Inscription réussie !");
-                            navigate("/");
+                            navigate("/"); //Redirect to home
                             break;
                         case 400:
                             setErrorMessage("L'email est déja utilisé ou le mot de passe est trop court (6).");
@@ -78,7 +78,7 @@ export default function Register(){
                             setErrorMessage("Une erreur s'est produite.");
                             break;
                     }
-                    loadingContext.setIsLoading(false); //Désactivation du spinner
+                    loadingContext.setIsLoading(false);
                 }, 500);
             })
             .catch(err => {

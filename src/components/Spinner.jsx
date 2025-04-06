@@ -1,21 +1,21 @@
-import Backdrop from "@mui/material/Backdrop"; //Ressources du backdrop
-import CircularProgress from "@mui/material/CircularProgress"; //Ressources du backdrop
-import { makeStyles } from "@mui/styles"; //Fonction importé permettant de styliser le backdrop
+import Backdrop from "@mui/material/Backdrop"; //Resources of the backdrop
+import CircularProgress from "@mui/material/CircularProgress"; //Resources of the backdrop
+import { makeStyles } from "@mui/styles"; //Import function to style the backdrop
 import useLoadingContext from "../context/LoadingContext";
 
-const useStyles = makeStyles({ //Style du spinner / backdrop
+const useStyles = makeStyles({ //Spinner style
   backdrop: {
     position: "absolute"
   }
 });
 
-export default function Spinner(){ {/* Permet de faire apparaître un spinner et de bloquer la page */}
+export default function Spinner(){ {/* Show a spinner and lock the page */}
   const classes = useStyles();
   const loadingContext = useLoadingContext();
 
   return (
     <>
-    {loadingContext.isLoading == true && 
+    {loadingContext.isLoading == true && // We show the spinner only if the context need it (Can be show from anywhere)
       <div>
         <Backdrop className={classes.backdrop} open>
           <CircularProgress color="inherit" />

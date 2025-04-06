@@ -1,4 +1,4 @@
-export default function Error({ message }) {
+export default function Error({ message }) { //Show an error if message is not null
     return (
       <>
         {message && (

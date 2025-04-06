@@ -10,32 +10,32 @@ import Success from '../components/Success';
 import PageTitle from '../components/PageTitle';
 import HackathonDescription from '../components/HackathonDescription';
 
-const registerTeamSchema = z.object({ //Schéma d'enregistrement
+const registerTeamSchema = z.object({ //Register team model
     name: z.string().min(6)
 });
 
-export default function HackathonDetail(){
-    const { id } = useParams();
+export default function HackathonDetail(){ //Page to show hackathon precise data
+    const { id } = useParams(); //Id of the hackathon displayed
     const userContext = useUserContext();
     const loadingContext = useLoadingContext();
 
     const { register, handleSubmit } = useForm();
 
-    const [data, setData] = useState(null);
-    const [error, setError] = useState("");
+    const [data, setData] = useState(null); //To set data
+    const [error, setError] = useState(""); //To show any error
 
-    const [errorMessage, setErrorMessage] = useState(""); //Pour afficher un msg d'erreur
-    const [successMessage, setSuccessMessage] = useState(""); //Pour afficher un msg de réussite
+    const [errorMessage, setErrorMessage] = useState(""); //To show any error when creating a team
+    const [successMessage, setSuccessMessage] = useState(""); //To show any success message when creating a team
 
-    const [errorJoinTeam, setErrorJoinTeam] = useState(""); 
-    const [successJoinTeam, setSuccessJoinTeam] = useState("");
-    const [idJoinTeamMessage, setIdJoinTeamMessage] = useState(-1);
+    const [errorJoinTeam, setErrorJoinTeam] = useState(""); //To show any error when joining a team
+    const [successJoinTeam, setSuccessJoinTeam] = useState(""); //To show any success message when joining a team
+    const [idJoinTeamMessage, setIdJoinTeamMessage] = useState(-1); //To get the team id joined
 
     let response;
 
-    if(data == null && error == ""){
-        loadingContext.setIsLoading(true);
-        setTimeout(async () => { //Simule un délai de la réponse de 3s
+    if(data == null && error == ""){ //Get the data at the start or if needed
+        loadingContext.setIsLoading(true); //Show the spinner
+        setTimeout(async () => { //To show the spinner
             fetch(`http://localhost:3002/hackathons/${id}`, {
                 headers: {
                     "Content-Type": "application/json"
@@ -62,16 +62,15 @@ export default function HackathonDetail(){
                 }
             })
             .catch((e) => {
-                console.log(e); //Si erreur l'afficher dans la console
+                console.log(e);
                 setData(null);
                 setError("Une erreur est survenue avec l'API.");
                 loadingContext.setIsLoading(false);
             });
-             //Désactivation du spinner à la fin
         }, 500);
     }
 
-    const onCreateTeam = (data) => {
+    const onCreateTeam = (data) => { //Function to create a team
 
         loadingContext.setIsLoading(true);
 
@@ -94,12 +93,12 @@ export default function HackathonDetail(){
         const registerTeamParsed = registerTeamSchema.safeParse(fetchData);
 
         if(!registerTeamParsed.success == true){
-            setErrorMessage("Données invalides, 6 caractères minimum.");
+            setErrorMessage("Données invalides, 8 caractères minimum.");
             loadingContext.setIsLoading(false);
             return;
         }
 
-        fetch("http://localhost:3002/teams/create", { //Envoie une requête à l'api pour essayer de se connecter
+        fetch("http://localhost:3002/teams/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -108,7 +107,7 @@ export default function HackathonDetail(){
             body: JSON.stringify(fetchData)
         })
         .then(async res => {
-            setTimeout(async () => { //Simule un délai de la réponse de 3s
+            setTimeout(async () => { //To show the spinner
                 switch (res.status) {
                     case 201:
                         await res.json();
@@ -127,7 +126,7 @@ export default function HackathonDetail(){
                         setErrorMessage("Une erreur s'est produite.");
                         break;
                 }
-                loadingContext.setIsLoading(false); //Désactivation du spinner
+                loadingContext.setIsLoading(false);
             }, 500);
         })
         .catch(err => {
@@ -136,7 +135,7 @@ export default function HackathonDetail(){
         });
     }
 
-    const onJoinTeam = (id) => {
+    const onJoinTeam = (id) => { //Function to join a team
 
         setData(null);
         setError("");
@@ -151,14 +150,14 @@ export default function HackathonDetail(){
             return;
         }
 
-        fetch(`http://localhost:3002/teams/join/${id}`, { //Envoie une requête à l'api pour essayer de se connecter
+        fetch(`http://localhost:3002/teams/join/${id}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
             }
         })
         .then(async res => {
-            setTimeout(async () => { //Simule un délai de la réponse de 3s
+            setTimeout(async () => { //To show the spinner
                 switch (res.status) {
                     case 201:
                         await res.json();
@@ -177,7 +176,7 @@ export default function HackathonDetail(){
                         setErrorJoinTeam("Une erreur s'est produite.");
                         break;
                 }
-                loadingContext.setIsLoading(false); //Désactivation du spinner
+                loadingContext.setIsLoading(false);
             }, 500);
         })
         .catch(err => {

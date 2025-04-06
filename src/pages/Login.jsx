@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router";
 import { useForm } from 'react-hook-form';
 import Navbar from '../components/Navbar';
@@ -14,18 +14,18 @@ export default function Login(){
 
     const { register, handleSubmit } = useForm();
 
-    const [errorMessage, setErrorMessage] = useState(""); //Pour afficher un msg d'erreur
+    const [errorMessage, setErrorMessage] = useState(""); //To show an error
 
-    const onLogin = (data) => { //Fonction activée au moment de l'essai de connexion
-        loadingContext.setIsLoading(true); //Active le spinner
-        setErrorMessage(""); //Message vide au départ
+    const onLogin = (data) => { //Function to login
+        loadingContext.setIsLoading(true); //Show the spinner
+        setErrorMessage("");
 
         const fetchData = {
             email: data.email,
             password: data.password
         }
 
-        fetch("http://localhost:3002/auth/login", { //Envoie une requête à l'api pour essayer de se connecter
+        fetch("http://localhost:3002/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -33,11 +33,14 @@ export default function Login(){
             body: JSON.stringify(fetchData)
         })
         .then(async res => {
-            setTimeout(async () => { //Simule un délai de la réponse de 3s
+            setTimeout(async () => {
                 switch (res.status) {
                     case 200:
-                        const json = await res.json(); //Récupération des données
-                        localStorage.setItem("token", json.token); //Enregistrement du token
+                        const json = await res.json();
+                        localStorage.setItem("token", json.token); //We register the token
+                        /**
+                         * We send a second http request to get the user data on login if the credentials is correct
+                         */
                         fetch("http://localhost:3002/auth/me", {
                             headers: {
                                 "Content-Type": "application/json",
@@ -45,17 +48,17 @@ export default function Login(){
                             }
                         })
                         .then(async res => {
-                            setTimeout(async () => { //Simule un délai de la réponse de 500ms
+                            setTimeout(async () => { //To show the spinner
                                 switch (res.status) {
                                     case 200:
-                                        const json = await res.json(); //Récupération des données
+                                        const json = await res.json();
                                         const user = {
                                             email: json.email,
                                             name: json.name,
                                             isAuthentified: true
                                         };
-                                        userContext.setUser(user); //Modification du contexte
-                                        navigate("/"); //Direction vers l'accueil'
+                                        userContext.setUser(user); //Modify the context
+                                        navigate("/"); //Redirect to home
                                         break;
                                     case 400:
                                         setErrorMessage("Token invalide.");
@@ -67,7 +70,7 @@ export default function Login(){
                                         localStorage.clear("token");
                                         break;
                                 }
-                                loadingContext.setIsLoading(false); //Désactivation du spinner
+                                loadingContext.setIsLoading(false);
                             }, 500);
                         })
                         .catch(err => {
@@ -86,7 +89,7 @@ export default function Login(){
                         setErrorMessage("Une erreur s'est produite.");
                         break;
                 }
-                loadingContext.setIsLoading(false); //Désactivation du spinner
+                loadingContext.setIsLoading(false);
             }, 500);
         })
         .catch(err => {

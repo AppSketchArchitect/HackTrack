@@ -1,21 +1,21 @@
 import { createContext, useContext, useState } from 'react';
 
-const LoadingContext = createContext(null); //Contexte de base égal à null (Privé)
+const LoadingContext = createContext(null); //Context of the spinner to null at default
 
-export const LoadingProvider = ({ children }) => { //Fournisseur du contexte à l'ensemble des enfants (Composants)
-    const [isLoading, setIsLoading] = useState(false); //Défini un état de base du contexte (Autre que null pour les enfants)
+export const LoadingProvider = ({ children }) => { //Provider of the loading context
+    const [isLoading, setIsLoading] = useState(false); //Set a default state to the context at false to hide the spinner
 
     return (
-        <LoadingContext.Provider value={{ isLoading, setIsLoading }}> {/* Fourni user et setUser aux enfants dans le contexte */}
+        <LoadingContext.Provider value={{ isLoading, setIsLoading }}> {/* Provide to chidren the capability to show or hide the spinner at any time and know if it is visible */}
             {children}
         </LoadingContext.Provider>
     );
 };
 
-export function useLoadingContext(){ //Fonction pour obtenir le contexte de façon sécurisée
+export function useLoadingContext(){ //Function to make secure the provider of the context
     const loadingContext = useContext(LoadingContext);
 
-    if(loadingContext == null){ //Si aucun UserProvider n'est défini dans la hiérarchie alors UserContext = null
+    if(loadingContext == null){ //If any Provider is define for the chidren, the loading context going to be null
         throw new Error('useUserContext must be used with a LoadingProvider');
     }
     return loadingContext;

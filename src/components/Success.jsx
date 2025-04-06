@@ -1,4 +1,4 @@
-export default function Success({ message }) {
+export default function Success({ message }) { //Show an success message if message is not null
     return (
       <>
         {message && (
